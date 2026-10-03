@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>For You — An Apology</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Georgia, "Times New Roman", serif;
+            background: #0d0b10;
+            color: #eee7eb;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* ---------------- BACKGROUND ---------------- */
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 120, 150, 0.08), transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(180, 100, 255, 0.07), transparent 30%);
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.035;
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    white 2px,
+                    white 3px
+                );
+            z-index: -1;
+        }
+
+        /* ---------------- PASSWORD ---------------- */
+
+        #lockScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            background:
+                radial-gradient(circle at center, #21131d 0%, #0d0b10 65%);
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #lockScreen.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .lock-box {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            padding: 45px 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            background: rgba(255,255,255,0.035);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+        }
+
+        .lock-heart {
+            font-size: 42px;
+            margin-bottom: 15px;
+            animation: heartbeat 2s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.12); }
+            30% { transform: scale(1); }
+        }
+
+        .lock-box h1 {
+            font-size: 30px;
+            font-weight: normal;
+            margin-bottom: 8px;
+        }
+
+        .lock-box p {
+            color: #aaa0a7;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            outline: none;
+            background: rgba(255,255,255,0.06);
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            letter-spacing: 5px;
+            font-family: inherit;
+        }
+
+        .password-input:focus {
+            border-color: rgba(255,150,175,0.6);
+        }
+
+        .unlock-btn {
+            width: 100%;
+            margin-top: 14px;
+            padding: 13px;
+            border: none;
+            border-radius: 12px;
+            background: #e7a0b3;
+            color: #1a1014;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .unlock-btn:hover {
+            transform: translateY(-2px);
+            background: #f1b4c5;
+        }
+
+        #wrongPassword {
+            color: #e995a8;
+            font-size: 13px;
+            margin-top: 12px;
+            min-height: 20px;
+        }
+
+        /* ---------------- MAIN ---------------- */
+
+        #website {
+            display: none;
+        }
+
+        #website.show {
+            display: block;
+        }
+
+        .container {
+            width: min(900px, 92%);
+            margin: auto;
+        }
+
+        /* ---------------- HERO ---------------- */
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .hero-content {
+            max-width: 720px;
+            animation: fadeUp 1.2s ease forwards;
+        }
+
+        .small-label {
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 11px;
+            color: #bcaab2;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 8vw, 78px);
+            font-weight: normal;
+            line-height: 1.05;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 span {
+            color: #e7a0b3;
+            font-style: italic;
+        }
+
+        .hero-subtitle {
+            max-width: 560px;
+            margin: auto;
+            color: #b8afb4;
+            font-size: 16px;
+        }
+
+        .scroll-note {
+            margin-top: 60px;
+            color: #82777e;
+            font-size: 12px;
+            letter-spacing: 2px;
+            animation: float 2s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(7px); }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---------------- LETTER ---------------- */
+
+        section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 55px;
+        }
+
+        .section-title span {
+            display: block;
+            color: #e7a0b3;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .section-title h2 {
+            font-size: clamp(30px, 5vw, 45px);
+            font-weight: normal;
+        }
+
+        .letter-card {
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: clamp(25px, 6vw, 60px);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.2);
+        }
+
+        .letter-card p {
+            color: #d0c8cc;
+            margin-bottom: 22px;
+            font-size: 16px;
+        }
+
+        .letter-card .opening {
+            font-size: 23px;
+            color: #f2e9ed;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .signature {
+            margin-top: 40px;
+            color: #e7a0b3;
+            font-style: italic;
+            font-size: 20px;
+        }
+
+        /* ---------------- MEMORY TIMELINE ---------------- */
+
+        .timeline {
+            position: relative;
+            margin-top: 40px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 18px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(231,160,179,0.25);
+        }
+
+        .memory {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 55px;
+        }
+
+        .memory-dot {
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: #e7a0b3;
+            box-shadow: 0 0 20px rgba(231,160,179,0.35);
+        }
+
+        .memory-date {
+            color: #e7a0b3;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .memory h3 {
+            font-size: 24px;
+            font-weight: normal;
+            margin-bottom: 10px;
+        }
+
+        .memory p {
+            color: #a9a1a5;
+        }
+
+        /* ---------------- QUOTE ---------------- */
+
+        .quote {
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .quote p {
+            max-width: 700px;
+            margin: auto;
+            font-size: clamp(25px, 5vw, 40px);
+            font-style: italic;
+            color: #eee2e7;
+            line-height: 1.4;
+        }
+
+        .quote span {
+            display: block;
+            margin-top: 25px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: #84777d;
+        }
+
+        /* ---------------- ACCOUNTABILITY ---------------- */
+
+        .accountability-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .accountability {
+            padding: 28px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.07);
+            transition: 0.3s;
+        }
+
+        .accountability:hover {
+            transform: translateY(-4px);
+            border-color: rgba(231,160,179,0.3);
+        }
+
+        .accountability h3 {
+            color: #e7a0b3;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .accountability p {
+            color: #aaa1a6;
+            font-size: 14px;
+        }
+
+        /* ---------------- FINAL ---------------- */
+
+        .final-section {
+            text-align: center;
+            padding-bottom: 150px;
+        }
+
+        .final-card {
+            padding: clamp(30px, 7vw, 70px);
+            border-radius: 28px;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(231,160,179,0.09),
+                    rgba(255,255,255,0.025)
+                );
+            border: 1px solid rgba(231,160,179,0.18);
+        }
+
+        .final-card h2 {
+            font-size: clamp(32px, 6vw, 52px);
+            font-weight: normal;
+            margin-bottom: 30px;
+        }
+
+        .final-card p {
+            max-width: 650px;
+            margin: 0 auto 22px;
+            color: #c9c0c5;
+        }
+
+        .final-line {
+            color: #f1dce3 !important;
+            font-size: 19px;
+            font-style: italic;
+            margin-top: 35px !important;
+        }
+
+        .final-signature {
+            margin-top: 45px;
+            color: #e7a0b3;
+            font-size: 22px;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px 50px;
+            color: #5f575c;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        /* ---------------- REVEAL ANIMATION ---------------- */
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ---------------- MOBILE ---------------- */
+
+        @media (max-width: 650px) {
+
+            .hero {
+                min-height: 92vh;
+            }
+
+            section {
+                padding: 75px 0;
+            }
+
+            .letter-card {
+                border-radius: 18px;
+                padding: 27px 22px;
+            }
+
+            .letter-card p {
+                font-size: 15px;
+            }
+
+            .letter-card .opening {
+                font-size: 20px;
+            }
+
+            .accountability-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 13px;
+            }
+
+            .memory {
+                padding-left: 45px;
+            }
+
+            .memory-dot {
+                left: 5px;
+            }
+
+            .memory h3 {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= PASSWORD ================= -->
+
+    <div id="lockScreen">
+
+        <div class="lock-box">
+
+            <div class="lock-heart">♡</div>
+
+            <h1>A little something...</h1>
+
+            <p>
+                This page wasn't made for everyone.
+            </p>
+
+            <input
+                type="password"
+                id="password"
+                class="password-input"
+                placeholder="••••"
+                maxlength="4"
+            >
+
+            <button class="unlock-btn" onclick="unlock()">
+                Open
+            </button>
+
+            <div id="wrongPassword"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= WEBSITE ================= -->
+
+    <main id="website">
+
+        <!-- HERO -->
+
+        <header class="hero">
+
+            <div class="hero-content">
+
+                <div class="small-label">
+                    A letter I should have written sooner
+                </div>
+
+                <h1>
+                    I'm <span>sorry.</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    I don't know what happens after this.
+                    I just know there were things I needed to say,
+                    and this time I didn't want to leave them unsaid.
+                </p>
+
+                <div class="scroll-note">
+                    ↓ read when you're ready
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- OPENING LETTER -->
+
+        <section>
+
+            <div class="container">
+
+                <div class="section-title reveal">
+                    <span>01 — The letter</span>
+                    <h2>Without excuses.</h2>
+                </div>
+
+                <div class="letter-card reveal">
+
+                    <p class="opening">
+                        Hey...
+                    </p>
+
+                    <p>
+                        I'm not making this because I expect a reply.
+                        I'm not making this because I want to convince
+                        you of anything.
+                    </p>
+
+                    <p>
+                        I'm making this because sometimes a simple
+                        "sorry" doesn't feel like enough when you know
+                        you've hurt someone who mattered so much to you.
+                    </p>
+
+                    <p>
+                        So I wanted to take the time to actually say
+                        everything I should have said.
+                    </p>
+
+                    <p>
+                        No excuses.
+                        No "but".
+                        No trying to make myself look better.
+                    </p>
+
+                    <p>
+                        Just me being honest with you.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- OUR STORY -->
+
+        <section>
+
+            <div class="container">
+
+                <div class="section-title reveal">
+                    <span>02 — Before the apology</span>
+                    <h2>There was an us.</h2>
+                </div>
+
+                <div class="letter-card reveal">
+
+                    <p>
+                        It all started with a message on Instagram.
+                    </p>
+
+                    <p>
+                        <strong>5 June 2023.</strong>
+                    </p>
+
+                    <p>
+                        One message somehow became conversations.
+                        Conversations became friendship.
+                        And somewhere along the way, you became one
+                        of the most important people in my life.
+                    </p>
+
+                    <p>
+                        We became best friends.
+                    </p>
+
+                    <p>
+                        There were stupid conversations, random moments,
+                        little memories that probably didn't look important
+                        at the time but somehow became some of the memories
+                        I remember the most.
+                    </p>
+
+                    <p>
+                        And then came the moments that weren't just
+                        conversations anymore.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MEMORIES -->
+
+        <section>
+
+            <div class="container">
+
+                <div class="section-title reveal">
+                    <span>03 — The memories</span>
+                    <h2>Things I'll remember.</h2>
+                </div>
+
+                <div class="timeline">
+
+                    <div class="memory reveal">
+
+                        <div class="memory-dot"></div>
+
+                        <div class="memory-date">
+                            05 June 2023
+                        </div>
+
+                        <h3>The first message.</h3>
+
+                        <p>
+                            The beginning of a story I never expected
+                            would become this important to me.
+                        </p>
+
+                    </div>
+
+
+                    <div class="memory reveal">
+
+                        <div class="memory-dot"></div>
+
+                        <div class="memory-date">
+                            16 January — 4:26
+                        </div>
+
+                        <h3>The first time we held hands.</h3>
+
+                        <p>
+                            Such a small moment from the outside.
+                            But somehow, it became one of those moments
+                            that stays with you.
+                        </p>
+
+                    </div>
+
+
+                    <div class="memory reveal">
+
+                        <div class="memory-dot"></div>
+
+                        <div class="memory-date">
+                            26 January
+                        </div>
+
+                        <h3>The first hug.</h3>
+
+                        <p>
+                            Another memory that doesn't need a huge story
+                            around it. I remember it because it was ours.
+                        </p>
+
+                    </div>
+
+
+                    <div class="memory reveal">
+
+                        <div class="memory-dot"></div>
+
+                        <div class="memory-date">
+                            14 February — 1:00–3:00 AM
+                        </div>
+
+                        <h3>A night I'll remember.</h3>
+
+                        <p>
+                            One of those moments that quietly becomes
+                            part of your personal history.
+                        </p>
+
+                    </div>
+
+
+                    <div class="memory reveal">
+
+                        <div class="memory-dot"></div>
+
+                        <div class="memory-date">
+                            30 October 2024
+                        </div>
+
+                        <h3>The first time we met.</h3>
+
+                        <p>
+                            After everything that had started through
+                            a screen, there was finally a real moment,
+                            a real place, and two people who had already
+                            become important to each other.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- QUOTE -->
+
+        <div class="quote reveal">
+
+            <p>
+                "Love is more important than ego."
+            </p>
+
+            <span>
+                Something I understood later than I should have.
+            </span>
+
+        </div>
+
+
+        <!-- ACCOUNTABILITY -->
+
+        <section>
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>04 — What I got wrong</span>
+
+                    <h2>
+                        The part where I take responsibility.
+                    </h2>
+
+                </div>
+
+
+                <div class="accountability-grid">
+
+                    <div class="accountability reveal">
+
+                        <h3>My silence.</h3>
+
+                        <p>
+                            I stopped communicating when I should have
+                            talked things through.
+                        </p>
+
+                    </div>
+
+
+                    <div class="accountability reveal">
+
+                        <h3>My ego.</h3>
+
+                        <p>
+                            I let my ego become more important than
+                            fixing something that mattered.
+                        </p>
+
+                    </div>
+
+
+                    <div class="accountability reveal">
+
+                        <h3>Ignoring you.</h3>
+
+                        <p>
+                            You ignored me, and instead of breaking
+                            that cycle, I chose to ignore you too.
+                            That wasn't maturity. It was my mistake.
+                        </p>
+
+                    </div>
+
+
+                    <div class="accountability reveal">
+
+                        <h3>Not caring enough.</h3>
+
+                        <p>
+                            There were moments when I didn't show you
+                            the care, respect and importance you deserved.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SECOND LETTER -->
+
+        <section>
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>05 — The apology</span>
+
+                    <h2>
+                        The apology, without the "but".
+                    </h2>
+
+                </div>
+
+
+                <div class="letter-card reveal">
+
+                    <p>
+                        I'm sorry for the times I made you feel ignored.
+                    </p>
+
+                    <p>
+                        I'm sorry for letting my ego speak louder
+                        than my feelings.
+                    </p>
+
+                    <p>
+                        I'm sorry for not communicating when I should have.
+                    </p>
+
+                    <p>
+                        I'm sorry for not respecting your feelings
+                        the way I should have.
+                    </p>
+
+                    <p>
+                        I'm sorry that there were moments where I
+                        didn't care for you the way someone who truly
+                        valued you should have.
+                    </p>
+
+                    <p>
+                        And I'm sorry that instead of fixing things,
+                        I sometimes chose silence.
+                    </p>
+
+                    <p>
+                        I could give you a hundred reasons for why
+                        I behaved the way I did.
+                    </p>
+
+                    <p>
+                        But none of them would change the fact that
+                        I hurt you.
+                    </p>
+
+                    <p>
+                        So I'm not going to make excuses.
+                    </p>
+
+                    <p>
+                        I was wrong.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- WHAT I UNDERSTAND -->
+
+        <section>
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>06 — What I understand now</span>
+
+                    <h2>
+                        Some things become clear later.
+                    </h2>
+
+                </div>
+
+
+                <div class="letter-card reveal">
+
+                    <p>
+                        I understand now that caring about someone isn't
+                        just about the good moments.
+                    </p>
+
+                    <p>
+                        It's also about communicating when things become
+                        difficult.
+                    </p>
+
+                    <p>
+                        It's about putting ego aside.
+                    </p>
+
+                    <p>
+                        It's about listening instead of assuming.
+                    </p>
+
+                    <p>
+                        And it's about respecting someone's feelings,
+                        even when you don't completely understand them.
+                    </p>
+
+                    <p>
+                        I can't change what already happened.
+                    </p>
+
+                    <p>
+                        But I can understand it.
+                        I can learn from it.
+                        And I can become better because of it.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- GRATITUDE -->
+
+        <section>
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>07 — Thank you</span>
+
+                    <h2>
+                        For everything.
+                    </h2>
+
+                </div>
+
+
+                <div class="letter-card reveal">
+
+                    <p>
+                        Thank you for being there.
+                    </p>
+
+                    <p>
+                        Thank you for the conversations,
+                        the memories, the stupid jokes,
+                        the little moments and the big ones.
+                    </p>
+
+                    <p>
+                        Thank you for loving me.
+                    </p>
+
+                    <p>
+                        Thank you for becoming such an important part
+                        of my life.
+                    </p>
+
+                    <p>
+                        Whatever happens from here, I don't want to
+                        pretend that none of it mattered.
+                    </p>
+
+                    <p>
+                        It mattered to me.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FINAL -->
+
+        <section class="final-section">
+
+            <div class="container">
+
+                <div class="final-card reveal">
+
+                    <h2>
+                        One last thing.
+                    </h2>
+
+                    <p>
+                        I'm not asking you to forget what happened.
+                    </p>
+
+                    <p>
+                        I'm not asking you to immediately forgive me.
+                    </p>
+
+                    <p>
+                        I'm not even asking you to come back.
+                    </p>
+
+                    <p>
+                        You don't owe me a response.
+                    </p>
+
+                    <p>
+                        I just owed you an apology.
+                    </p>
+
+                    <p class="final-line">
+                        I hurt you, and whatever you choose after this,
+                        I'll respect it.
+                    </p>
+
+                    <p class="final-line">
+                        I don't know what happens after this.
+                        I just know I needed you to know that I'm sorry.
+                    </p>
+
+                    <div class="final-signature">
+                        — Jinx
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            Made with honesty, not expectation.
+        </footer>
+
+    </main>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        /* PASSWORD */
+
+        function unlock() {
+
+            const password = document.getElementById("password").value;
+            const lockScreen = document.getElementById("lockScreen");
+            const website = document.getElementById("website");
+            const wrongPassword = document.getElementById("wrongPassword");
+
+            if (password === "0112") {
+
+                lockScreen.classList.add("hide");
+                website.classList.add("show");
+
+                setTimeout(() => {
+                    document.body.style.overflow = "auto";
+                }, 500);
+
+            } else {
+
+                wrongPassword.textContent =
+                    "That isn't it. Try again.";
+
+                const input =
+                    document.getElementById("password");
+
+                input.value = "";
+
+                input.animate(
+                    [
+                        { transform: "translateX(0)" },
+                        { transform: "translateX(-7px)" },
+                        { transform: "translateX(7px)" },
+                        { transform: "translateX(0)" }
+                    ],
+                    {
+                        duration: 250
+                    }
+                );
+            }
+        }
+
+
+        /* ENTER KEY */
+
+        document
+            .getElementById("password")
+            .addEventListener("keydown", function(event) {
+
+                if (event.key === "Enter") {
+                    unlock();
+                }
+
+            });
+
+
+        /* SCROLL REVEAL */
+
+        const revealElements =
+            document.querySelectorAll(".reveal");
+
+        const observer =
+            new IntersectionObserver(
+                (entries) => {
+
+                    entries.forEach(entry => {
+
+                        if (entry.isIntersecting) {
+
+                            entry.target.classList.add("active");
+
+                            observer.unobserve(entry.target);
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealElements.forEach(element => {
+            observer.observe(element);
+        });
+
+    </script>
+
+</body>
+</html>
